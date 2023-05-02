@@ -1,9 +1,7 @@
-# 📦 Streamlit App Starter Kit 
+# 📦 Financial Statement Analysis Dashboard
 ```
-⬆️ (Replace above with your app's name)
+⬆️ Bla bla bla
 ```
-
-Description of the app ...
 
 ## Demo App
 
