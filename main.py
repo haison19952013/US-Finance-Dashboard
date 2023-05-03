@@ -52,7 +52,7 @@ class financial_statement_analysis():
     def time_series_plot(self,x,y,xlabel,ylabel,kind = 'line'):
         df = self.financial_statement_df
         # Plot data
-        (fig, ax) = plt.subplots(1, 1, figsize=(10, 8))
+        (fig, ax) = plt.subplots(1, 1, figsize=(6, 4))
         # Create a plot
         df.plot(x = x, y = y, kind = kind,ax = ax,legend = None)
         ax.set_xlabel(xlabel, fontsize=16)
@@ -61,19 +61,26 @@ class financial_statement_analysis():
         ax.grid(True)
         return fig
     
-    def gauge_plot(self,y,ylabel):
+    def gauge_plot(self,y,ylabel,ref_value = 1.0):
         # gauge chart using plotly
         df = self.financial_statement_df
         # Filter data to take the latest year
         df = df[df['asOfDate'] == df['asOfDate'].max()]
-        fig = go.Figure(go.Indicator(
-            mode = "gauge+number",
+        fig = go.Figure(go.Indicator(delta = {'reference': ref_value},
+            mode = "gauge+number+delta",
             value = df[[y]].values.tolist()[0][0],
             domain = {'x': [0, 1], 'y': [0, 1]},
             title = {'text': ylabel}))
+        fig.update_layout(font=dict(size=20))
         return fig
 
-
+# make any grid with a function
+def make_grid(cols,rows):
+    grid = [0]*cols
+    for i in range(cols):
+        with st.container():
+            grid[i] = st.columns(rows)
+    return grid
 
 def load_symbol_name():
     url = 'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies'
@@ -84,10 +91,14 @@ def load_symbol_name():
 
 # define the ticker symbol
 symbol_tuple = load_symbol_name()
-tickerSymbol = st.selectbox(label = 'Ticker Symbol of the analyzed company', options = symbol_tuple)
+
+with st.sidebar:
+    tickerSymbol = st.selectbox(label='Please choose your company', 
+                            options=symbol_tuple)
+
 # tickerSymbol = 'XOM'
 longname = yf.Ticker(tickerSymbol).info["longName"]
-st.title('Finanicial Statement Analsysis For %s (%s)' % (longname, tickerSymbol))
+st.title('Financial Statement Analsysis For %s (%s)' % (longname, tickerSymbol))
 
 # Get data and extract metrics
 tickerData = yq.Ticker(tickerSymbol)
@@ -101,44 +112,59 @@ with st.container():
     if show_data:
         financial_statement_df
 
-st.header('1. Balance Sheet Analysis')
-st.subheader('1.2 Overview')
-fig = financial_statement.gauge_plot(y = 'Debt_2_equity',ylabel = 'Debt-to-Equity')
-st.plotly_chart(fig, use_container_width=True)
-# plot using column
+tab1, tab2, tab3, tab4 = st.tabs(["Overview",
+                            "Balance Sheet Analysis", 
+                            "Income Statement Analysis", 
+                            "Cash Flow Analsysis"])
+
+with tab1:
+    # plot using column in streamlit
+    mygrid = make_grid(2,2)
+    fig = financial_statement.gauge_plot(y = 'Debt_2_equity',ylabel = 'Debt-to-Equity', ref_value = 1.0)
+    mygrid[0][0].plotly_chart(fig,use_container_width=True)
+    fig = financial_statement.gauge_plot(y = 'Current_ratio',ylabel = 'Current Ratio', ref_value = 1.0)
+    mygrid[0][1].plotly_chart(fig,use_container_width=True)
+    fig = financial_statement.gauge_plot(y = 'Asset_turnover_rate',ylabel = 'Asset Turnover Rate', ref_value= 1.0)
+    mygrid[1][0].plotly_chart(fig,use_container_width=True)
+    fig = financial_statement.gauge_plot(y = 'Inventory_turnover_rate',ylabel = 'Inventory Turnover Rate',ref_value = 1.0)
+    mygrid[1][1].plotly_chart(fig,use_container_width=True)
 
 
-# Analyze financial health
-st.subheader('1.2 Financial Health')
-st.write('- Debt-to-Equity = Total Liabilities / Total Shareholders Equity (Stockholders Equity)')
-fig = financial_statement.time_series_plot(x = 'asOfDate', y = 'Debt_2_equity', xlabel='Year',ylabel='Debt-to-Equity',kind = 'bar')
-st.pyplot(fig)
+with tab2:
+    # Analyze financial health
+    st.subheader('1. Financial Health')
+    st.write('- Debt-to-Equity = Total Liabilities / Total Shareholders Equity (Stockholders Equity)')
+    fig = financial_statement.time_series_plot(x = 'asOfDate', y = 'Debt_2_equity', xlabel='Year',ylabel='Debt-to-Equity',kind = 'bar')
+    st.pyplot(fig,use_container_width=True)
 
-st.write('- Current Ratio = Current Assets / Current Debt')
-fig = financial_statement.time_series_plot(x = 'asOfDate', y = 'Current_ratio', xlabel='Year',ylabel='Current Ratio',kind = 'bar')
-st.pyplot(fig)
+    st.write('- Current Ratio = Current Assets / Current Debt')
+    fig = financial_statement.time_series_plot(x = 'asOfDate', y = 'Current_ratio', xlabel='Year',ylabel='Current Ratio',kind = 'bar')
+    st.pyplot(fig)
 
-# Analyze asset utilization
-st.subheader('1.3 Asset Utilization')
-st.write('- Asset Turnover Rate = Total Sales / (Beginning Assets + Ending Assets)/2')
-fig = financial_statement.time_series_plot(x = 'asOfDate', y = 'Asset_turnover_rate', xlabel='Year',ylabel='Asset Turnover Rate',kind = 'bar')
-st.pyplot(fig)
+    # Analyze asset utilization
+    st.subheader('2. Asset Utilization')
+    st.write('- Asset Turnover Rate = Total Sales / (Beginning Assets + Ending Assets)/2')
+    fig = financial_statement.time_series_plot(x = 'asOfDate', y = 'Asset_turnover_rate', xlabel='Year',ylabel='Asset Turnover Rate',kind = 'bar')
+    st.pyplot(fig)
 
-st.write('- Inventory Turnover Rate = Costs of goods solds / (Beginning Inventory + Ending Inventory)/2')
-fig = financial_statement.time_series_plot(x = 'asOfDate', y = 'Inventory_turnover_rate', xlabel='Year',ylabel='Inventory Turnover Rate',kind = 'bar')
-st.pyplot(fig)
+    st.write('- Inventory Turnover Rate = Costs of goods solds / (Beginning Inventory + Ending Inventory)/2')
+    fig = financial_statement.time_series_plot(x = 'asOfDate', y = 'Inventory_turnover_rate', xlabel='Year',ylabel='Inventory Turnover Rate',kind = 'bar')
+    st.pyplot(fig)
 
-# Analyze bussiness growth
-st.subheader('1.4 Bussiness Growth')
-st.write('- Assets Growth = Total Assets (year) -  Total Assets (year - 1) / Total Assets (year) * 100%')
-fig = financial_statement.time_series_plot(x = 'asOfDate', y = 'Assets_growth', xlabel='Year',ylabel='Assets Growth (%)',kind = 'bar')
-st.pyplot(fig)
+    # Analyze bussiness growth
+    st.subheader('3. Bussiness Growth')
+    st.write('- Assets Growth = Total Assets (year) -  Total Assets (year - 1) / Total Assets (year) * 100%')
+    fig = financial_statement.time_series_plot(x = 'asOfDate', y = 'Assets_growth', xlabel='Year',ylabel='Assets Growth (%)',kind = 'bar')
+    st.pyplot(fig)
 
-st.write('- Stockholders Equity Growth = Stockholders Equity (year) -  Stockholders Equity (year - 1) / Stockholders Equity (year) * 100%')
-fig = financial_statement.time_series_plot(x = 'asOfDate', y = 'StockholdersEquity_growth', xlabel='Year',ylabel='Stockholders Equity Growth  (%)',kind = 'bar')
-st.pyplot(fig)
+    st.write('- Stockholders Equity Growth = Stockholders Equity (year) -  Stockholders Equity (year - 1) / Stockholders Equity (year) * 100%')
+    fig = financial_statement.time_series_plot(x = 'asOfDate', y = 'StockholdersEquity_growth', xlabel='Year',ylabel='Stockholders Equity Growth  (%)',kind = 'bar')
+    st.pyplot(fig)
 
-st.header('2. Income Statement')
-st.header('3. Cash Flow')
+with tab3:
+    st.header('1. Income Statement')
+
+with tab4:
+    st.header('1. Cash Flow')
 
 
