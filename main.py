@@ -207,7 +207,10 @@ tab1, tab2, tab3, tab4 = st.tabs(["Overview",
                             "Income Statement Analysis", 
                             "Cash Flow Analsysis"])
 
-
+# Get data and extract metrics
+financial_statement = financial_statement_analysis(tickerSymbol, tickerData)
+financial_statement_df = financial_statement.financial_statement_df
+financial_statement.extract_metrics()
 
 # Ask for displaying raw data
 with st.container():
