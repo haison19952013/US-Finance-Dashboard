@@ -1,9 +1,7 @@
-import yfinance as yf
 import streamlit as st
 import yahooquery as yq
 import matplotlib.pyplot as plt
 import pandas as pd
-import numpy as np
 import plotly.graph_objects as go
 
 class financial_statement_analysis():
