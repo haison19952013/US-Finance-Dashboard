@@ -1,8 +1,8 @@
 import streamlit as st
 from .utils import Time_series_plot
 
-def Tab2(tab2_obj,data_obj):
-    with tab2_obj:
+def BS_tab(tab_obj,data_obj):
+    with tab_obj:
         financial_statement_df = data_obj.financial_statement_df
         # Analyze financial health
         st.subheader('1. Financial Health')

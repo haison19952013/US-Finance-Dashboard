@@ -2,6 +2,14 @@ import streamlit as st
 import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 
+def Markdown_html_text(text,align = 'center',level = 'h1'):
+    md_text = '<{} style="text-align: {};">{}</{}>'.format(level,align,text,level)
+    st.markdown(md_text, unsafe_allow_html=True)
+
+def Markdown_html_link(text,link,align = 'center'):
+    md_text = '<div align="{}"><a href="{}">{} </a></div>'.format(align,link,text)
+    st.markdown(md_text, unsafe_allow_html=True)
+
 def Make_grid(cols,rows):
     grid = [0]*cols
     for i in range(cols):
@@ -88,3 +96,21 @@ def Bullet_plot(financial_statement_df, y, ylabel, ref_value=1.0, min=-4, max=8)
 
     fig.update_layout(height=250, font=dict(size=20))
     return fig
+
+# Solution provided by dataprofessor (https://discuss.streamlit.io/t/image-in-markdown/13274/10) modified by mze3e to center the image
+# img_to_bytes and img_to_html inspired from https://pmbaumgartner.github.io/streamlitopedia/sizing-and-images.html
+
+# import base64
+# from pathlib import Path
+
+# def img_to_bytes(img_path):
+#     img_bytes = Path(img_path).read_bytes()
+#     encoded = base64.b64encode(img_bytes).decode()
+#     return encoded
+# def img_to_html(img_path):
+#     img_html = "<img src='data:image/png;base64,{}' class='img-fluid'>".format(
+#       img_to_bytes(img_path)
+#     )
+#     return img_html
+
+# st.markdown(<p style='text-align: center; color: grey;'>"+img_to_html('image.png')+"</p>", unsafe_allow_html=True)

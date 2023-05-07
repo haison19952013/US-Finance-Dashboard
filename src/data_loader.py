@@ -1,6 +1,8 @@
 import yahooquery as yq
 import pandas as pd
+import streamlit as st
 
+@st.cache_data
 def Load_symbol_name():
     url = 'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies'
     html = pd.read_html(url, header = 0)
