@@ -1,5 +1,5 @@
 import streamlit as st
-from .utils import Make_grid, Markdown_html_text, Markdown_html_link
+from .utils import Make_grid, Markdown_html_text, Markdown_html_link, Img_html
 
 def Top(data_obj):
     tickerData = data_obj.tickerData
@@ -11,7 +11,7 @@ def Top(data_obj):
     summary_profile = tickerData.summary_profile[tickerSymbol]
     with col1:
         logo_path = r'logos/%s.png' % tickerSymbol
-        st.image(logo_path,use_column_width = 'always')
+        Img_html(logo_path, align = 'center') 
         Markdown_html_text(text = tickerSymbol, align = 'center', level = 'h4')
         Markdown_html_link(text = longname,link = summary_profile['website'],align = 'center')
         st.markdown('`%s` `%s`' % ( summary_profile['sector'], summary_profile['industry']))

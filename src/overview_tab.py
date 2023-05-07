@@ -1,13 +1,14 @@
 import streamlit as st
 from .utils import Price_plot, Bullet_plot, Gauge_plot, Make_grid
 
-def Overview_tab(tab_obj,data_obj,from_date,to_date):
+def Overview_tab(tab_obj,data_obj,start_date,end_date):
     with tab_obj:
         symbol = data_obj.symbol
         tickerData = data_obj.tickerData
         financial_statement_df = data_obj.financial_statement_df
         # plot using column in streamlit
-        fig = Price_plot(symbol, tickerData, start_date = from_date,end_date = to_date)
+        st.markdown(f"# {symbol} Stock Price ({start_date} - {end_date})")
+        fig = Price_plot(tickerData, start_date = start_date,end_date = end_date)
         st.plotly_chart(fig,use_container_width=True)
         fig = Bullet_plot(financial_statement_df,y = 'Z_score',ylabel = 'Altman Z-Score', ref_value = 3.0)
         st.plotly_chart(fig,use_container_width=True)

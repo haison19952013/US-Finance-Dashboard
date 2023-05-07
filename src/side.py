@@ -8,6 +8,6 @@ def Side():
     with st.sidebar:
         tickerSymbol = st.selectbox(label='Please choose your company', 
                                 options=symbol_tuple)
-        from_date = st.date_input("From", datetime.date(2022, 1, 1))
-        to_date = st.date_input("To", datetime.date(2022, 5, 5))
-    return tickerSymbol, from_date, to_date
+        start_date = st.date_input("From", datetime.date(2022, 1, 1))
+        end_date = st.date_input("To", datetime.date(2022, 5, 5))
+    return tickerSymbol, start_date, end_date

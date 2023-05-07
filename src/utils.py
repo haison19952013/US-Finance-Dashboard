@@ -1,6 +1,8 @@
 import streamlit as st
 import plotly.graph_objects as go
 import matplotlib.pyplot as plt
+import base64
+from pathlib import Path
 
 def Markdown_html_text(text,align = 'center',level = 'h1'):
     md_text = '<{} style="text-align: {};">{}</{}>'.format(level,align,text,level)
@@ -17,7 +19,7 @@ def Make_grid(cols,rows):
             grid[i] = st.columns(rows)
     return grid
 
-def Price_plot(symbol, tickerData, start_date = '2022-01-01',end_date = '2022-05-05', interval = '1d'):
+def Price_plot(tickerData, start_date = '2022-01-01',end_date = '2022-05-05', interval = '1d'):
     price_data = tickerData.history(start=start_date, end=end_date, period='ytd', interval= interval)
     price_data = price_data.reset_index()
 
@@ -27,16 +29,13 @@ def Price_plot(symbol, tickerData, start_date = '2022-01-01',end_date = '2022-05
                                         high=price_data['high'],
                                         low=price_data['low'],
                                         close=price_data['close'])])
-
-    fig.update_layout(
-        title={
-            'text': f"{symbol} Stock Price ({start_date} - {end_date})",
-            'font': {'family': "Arial", 'size': 18, 'color': "#7f7f7f"},
-            'x': 0.25, # Set to 0.5 for center position or to a value >0.5 for right alignment
-            'y': 0.9, # Set to 1.0 for top alignment or to a smaller value for lower position
-        },
+    fig.update_xaxes(title="X Axis Title", title_font=dict(size=18))
+    fig.update_yaxes(title="Y Axis Title", title_font=dict(size=18))
+    fig.update_layout(margin={"l": 0, "r": 0, "t": 0, "b": 0},
         xaxis_title="Date",
-        yaxis_title="Price ($)",
+        yaxis_title="Price (USD)",
+        xaxis=dict(title_font=dict(size=20)),
+        yaxis=dict(title_font=dict(size=20))
     )
     return fig
 
@@ -97,20 +96,20 @@ def Bullet_plot(financial_statement_df, y, ylabel, ref_value=1.0, min=-4, max=8)
     fig.update_layout(height=250, font=dict(size=20))
     return fig
 
+def Create_download_link(df, filename):
+    csv = df.to_csv(index=False)
+    b64 = base64.b64encode(csv.encode()).decode()  # Convert to base64 encoding
+    href = f'<a href="data:file/csv;base64,{b64}" download="{filename}.csv">Download {filename} CSV file</a>'
+    return href
+
 # Solution provided by dataprofessor (https://discuss.streamlit.io/t/image-in-markdown/13274/10) modified by mze3e to center the image
 # img_to_bytes and img_to_html inspired from https://pmbaumgartner.github.io/streamlitopedia/sizing-and-images.html
 
-# import base64
-# from pathlib import Path
-
-# def img_to_bytes(img_path):
-#     img_bytes = Path(img_path).read_bytes()
-#     encoded = base64.b64encode(img_bytes).decode()
-#     return encoded
-# def img_to_html(img_path):
-#     img_html = "<img src='data:image/png;base64,{}' class='img-fluid'>".format(
-#       img_to_bytes(img_path)
-#     )
-#     return img_html
-
-# st.markdown(<p style='text-align: center; color: grey;'>"+img_to_html('image.png')+"</p>", unsafe_allow_html=True)
+def Img_html(img_path, align = 'center'):
+    def img_to_bytes(img_path):
+        img_bytes = Path(img_path).read_bytes()
+        encoded = base64.b64encode(img_bytes).decode()
+        return encoded
+    img_html = "<img src='data:image/png;base64,{}' class='img-fluid'>".format(img_to_bytes(img_path))
+    st.markdown("<p style='text-align: {}; color: grey;'>".format(align) + img_html +"</p>", unsafe_allow_html=True)
+    # return img_html
