@@ -5,7 +5,7 @@ def Top(data_obj):
     tickerData = data_obj.tickerData
     tickerSymbol = data_obj.symbol
     longname = tickerData.quote_type[tickerSymbol]['longName']
-    Markdown_html_text(text = 'US Finance Dashboard', align = 'center', level = 'h1')
+    Markdown_html_text(text = 'U.S Finance Dashboard', align = 'center', level = 'h1')
     col1, col2 = st.columns([1,3])
     # Column 1
     summary_profile = tickerData.summary_profile[tickerSymbol]
