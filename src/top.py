@@ -37,7 +37,7 @@ def Top(data_obj):
             Markdown_html_text(text = text, align = 'left', level = 'p')
         ratio_grid =  Make_grid(3,5)
         # Row 1st
-        ratio_grid[0][0].markdown('Market Cap <br> **%s %s**' % (round(summary_detail['marketCap']/1000000000,2), 'BUSD'), unsafe_allow_html=True)
+        ratio_grid[0][0].markdown('Market Cap <br> **%sB %s**' % (round(summary_detail['marketCap']/1000000000,2), 'USD'), unsafe_allow_html=True)
         ratio_grid[0][1].markdown('Forward P/E <br> **%s**' % round(key_stats['forwardPE'],2), unsafe_allow_html=True)
         ratio_grid[0][2].markdown('Forward EPS <br> **%s**' % round(key_stats['forwardEps'],2), unsafe_allow_html=True)
         ratio_grid[0][3].markdown('Recommendation  <br> <font color="red"><b>**%s**</b></font>' % technical_insights['recommendation']['rating'], unsafe_allow_html=True)
@@ -58,11 +58,3 @@ def Top(data_obj):
 
     with st.expander("Company Business Summary",expanded = False):
             st.write(summary_profile['longBusinessSummary'])
-
-    # Get data and extract metrics
-    financial_statement_df = data_obj.financial_statement_df
-    # Ask for displaying raw data
-    with st.container():
-        show_data = st.checkbox("Do you want to see the full table of financial statement data?")
-        if show_data:
-            financial_statement_df

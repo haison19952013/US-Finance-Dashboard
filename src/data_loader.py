@@ -12,11 +12,10 @@ def Load_symbol_name():
 class Financial_statement_analysis():
     def __init__(self,symbol,frequency="a"):
         self.tickerData = yq.Ticker(symbol)
-        self.financial_statement_df = self.tickerData.all_financial_data(frequency=frequency)
+        # self.financial_statement_df = self.tickerData.all_financial_data(frequency=frequency)
         self.price = self.tickerData.price[symbol]
         self.symbol = symbol
-        self.preprocess()
-        self.extract_metrics()
+        # self.preprocess()
     
     def preprocess(self):
         def format_year(year):

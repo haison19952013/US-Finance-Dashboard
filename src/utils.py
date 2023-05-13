@@ -39,21 +39,21 @@ def Price_plot(tickerData, start_date = '2022-01-01',end_date = '2022-05-05', in
     )
     return fig
 
-def Time_series_plot(financial_statement_df,x,y,xlabel,ylabel,kind = 'line'):
-    df = financial_statement_df
+def Time_series_plot(df,x,y,xlabel,ylabel,kind = 'line'):
+    plt.style.use('ggplot')
     # Plot data
     (fig, ax) = plt.subplots(1, 1, figsize=(6, 4))
     # Create a plot
-    df.plot(x = x, y = y, kind = kind,ax = ax,legend = None)
+    df.plot(x = x, y = y, kind = kind,ax = ax,legend = None, marker='o')
     ax.set_xlabel(xlabel, fontsize=16)
     ax.set_ylabel(ylabel, fontsize=16)
     ax.tick_params(labelsize=12, labelrotation = 0)
     ax.grid(True)
+    fig.set_tight_layout(True)
     return fig
 
-def Gauge_plot(financial_statement_df,y,ylabel,ref_value = 1.0):
+def Gauge_plot(df,y,ylabel,ref_value = 1.0):
     # gauge chart using plotly
-    df = financial_statement_df
     # Filter data to take the latest year
     df = df[df['asOfDate'] == df['asOfDate'].max()]
     fig = go.Figure(go.Indicator(delta = {'reference': ref_value},
@@ -64,9 +64,7 @@ def Gauge_plot(financial_statement_df,y,ylabel,ref_value = 1.0):
     fig.update_layout(font=dict(size=20))
     return fig
 
-def Bullet_plot(financial_statement_df, y, ylabel, ref_value=1.0, min=-4, max=8):
-    # bullet chart using plotly
-    df = financial_statement_df
+def Bullet_plot(df, y, ylabel, ref_value=1.0, min=-4, max=8):
     # Filter data to take the latest year
     df = df[df['asOfDate'] == df['asOfDate'].max()]
     fig = go.Figure(go.Indicator(
