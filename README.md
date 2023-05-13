@@ -23,8 +23,7 @@ streamlit run main.py
 ```
 
 ## Demos
-
-Examples of how to use your app.
+- [Online web app](https://lhs-inc-finance-investigation.streamlit.app/)
 
 ## Roadmap
 
