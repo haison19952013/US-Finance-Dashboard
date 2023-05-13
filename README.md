@@ -22,8 +22,8 @@ pip install -r requirements.txt
 streamlit run main.py
 ```
 
-## Demos
-- [Online web app](https://lhs-inc-us-finance-investigation.streamlit.app/)
+## Demos: [Online web app](https://lhs-inc-us-finance-investigation.streamlit.app/)
+![Alt Text](demo.gif)
 
 ## Roadmap
 
