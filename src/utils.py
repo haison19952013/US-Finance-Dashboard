@@ -32,7 +32,6 @@ def Price_plot(tickerData, start_date = '2022-01-01',end_date = '2022-05-05', in
     fig.update_xaxes(title="X Axis Title", title_font=dict(size=18))
     fig.update_yaxes(title="Y Axis Title", title_font=dict(size=18))
     fig.update_layout(margin={"l": 0, "r": 0, "t": 0, "b": 0},
-        xaxis_title="Date",
         yaxis_title="Price (USD)",
         xaxis=dict(title_font=dict(size=20)),
         yaxis=dict(title_font=dict(size=20))
